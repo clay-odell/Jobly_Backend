@@ -3,9 +3,12 @@
 require("dotenv").config();
 require("colors");
 
+// Print all environment variables to debug
+console.log("Environment Variables:", process.env);
+
 const SECRET_KEY = process.env.SECRET_KEY || "secret-dev";
 const PORT = +process.env.DB_PORT || 3001;
-console.log(PORT);
+console.log(`PORT: ${PORT}`);
 
 function getDatabaseUri() {
   return process.env.NODE_ENV === "test"
@@ -15,12 +18,12 @@ function getDatabaseUri() {
 
 const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 13;
 
-// console.log("Jobly Config:".green);
-// console.log("SECRET_KEY:".yellow, SECRET_KEY);
+console.log("Jobly Config:".green);
+console.log("SECRET_KEY:".yellow, SECRET_KEY);
 console.log("PORT:".yellow, PORT.toString());
-// console.log("BCRYPT_WORK_FACTOR".yellow, BCRYPT_WORK_FACTOR);
-// console.log("Database:".yellow, getDatabaseUri());
-// console.log("---");
+console.log("BCRYPT_WORK_FACTOR".yellow, BCRYPT_WORK_FACTOR);
+console.log("Database:".yellow, getDatabaseUri());
+console.log("---");
 
 module.exports = {
   SECRET_KEY,
