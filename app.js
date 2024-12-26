@@ -1,19 +1,15 @@
 "use strict";
 
-/** Express app for jobly. */
-
 const express = require("express");
 const cors = require("cors");
+const morgan = require("morgan");
 
 const { NotFoundError } = require("./expressError");
-
 const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const companiesRoutes = require("./routes/companies");
 const usersRoutes = require("./routes/users");
 const jobsRoutes = require("./routes/jobs");
-
-const morgan = require("morgan");
 
 const app = express();
 
@@ -28,6 +24,12 @@ app.use("/users", usersRoutes);
 app.use("/jobs", jobsRoutes);
 
 console.log("Routes set up...");
+
+// Define root route to handle requests to root
+app.get('/', (req, res) => {
+  res.send('Welcome to Jobly API');
+});
+
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {
   return next(new NotFoundError());
@@ -43,5 +45,6 @@ app.use(function (err, req, res, next) {
     error: { message, status },
   });
 });
+
 console.log("Express app initialized...");
 module.exports = app;
