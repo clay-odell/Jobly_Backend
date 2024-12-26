@@ -1,16 +1,16 @@
 "use strict";
 const { Client } = require("pg");
-const { getDatabaseUri } = require("./config");
 
-const db = new Client({
-  connectionString: getDatabaseUri(),
+const client = new Client({
+  connectionString: 'postgresql://postgres.xetbuzzfgtoeijwxzqaj:Supabase1302@aws-0-us-west-1.pooler.supabase.com:5432/postgres',
   ssl: {
     rejectUnauthorized: false
   }
 });
 
-db.connect()
-  .then(() => console.log('Connected to the database'))
+client.connect()
+  .then(() => {
+    console.log('Connected to the database');
+    return client.end();
+  })
   .catch(err => console.error('Connection error:', err.stack));
-
-module.exports = db;
