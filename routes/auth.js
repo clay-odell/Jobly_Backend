@@ -31,12 +31,13 @@ router.post("/token", async function (req, res, next) {
     const { username, password } = req.body;
     const user = await User.authenticate(username, password);
     const token = createToken(user);
-    console.log("Token: ", token);
-    return res.json({ token, user }); //added user to this authentication to make the user object available on frontend.
+    console.log("Generated Token:", token);  // Ensure the token is generated correctly
+    return res.json({ token, user });
   } catch (err) {
     return next(err);
   }
 });
+
 
 /** POST /auth/register:   { user } => { token }
  *
