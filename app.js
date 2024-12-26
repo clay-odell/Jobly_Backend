@@ -5,7 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const { NotFoundError } = require("./expressError");
-
+const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const companiesRoutes = require("./routes/companies");
 const usersRoutes = require("./routes/users");
@@ -18,19 +18,13 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(morgan("tiny"));
-// app.use(authenticateJWT);
 
 app.use("/auth", authRoutes);
-app.use("/companies", companiesRoutes);
-app.use("/users", usersRoutes);
-app.use("/jobs", jobsRoutes);
+app.use("/companies", authenticateJWT, companiesRoutes);
+app.use("/users", authenticateJWT, usersRoutes);
+app.use("/jobs", authenticateJWT, jobsRoutes);
 
 console.log("Routes set up...");
-
-// Define root route to handle requests to root
-app.get('/', (req, res) => {
-  res.send('Welcome to Jobly API');
-});
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {
