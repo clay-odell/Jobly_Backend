@@ -3,11 +3,10 @@
 /** Routes for authentication. */
 
 const jsonschema = require("jsonschema");
-
 const User = require("../models/user");
 const express = require("express");
 const router = new express.Router();
-const {ensureLoggedIn} = require('../middleware/auth');
+const { ensureLoggedIn } = require('../middleware/auth');
 const { createToken } = require("../helpers/tokens");
 const userAuthSchema = require("../schemas/userAuth.json");
 const userRegisterSchema = require("../schemas/userRegister.json");
@@ -32,8 +31,10 @@ router.post("/token", async function (req, res, next) {
     const user = await User.authenticate(username, password);
     const token = createToken(user);
     console.log("Generated Token:", token);  // Ensure the token is generated correctly
+    console.log("Authenticated User:", user);  // Log authenticated user
     return res.json({ token, user });
   } catch (err) {
+    console.error("Error in /token route:", err);
     return next(err);
   }
 });
@@ -58,21 +59,30 @@ router.post("/register", async function (req, res, next) {
 
     const newUser = await User.register({ ...req.body, isAdmin: false });
     const token = createToken(newUser);
-    return res.status(201).json({ token, newUser });
+    console.log("Generated Token on Register:", token);  // Log generated token on register
+    return res.status(201).json({ token, user: newUser });
   } catch (err) {
+    console.error("Error in /register route:", err);
     return next(err);
   }
 });
 
-  router.get("/currentUser", ensureLoggedIn, async function (req, res, next) {
-    try {
-      const user = await User.get(req.locals.user.username);
-      console.log("Res.JSON user: ", res.json({user}));
-      return res.json({ user });
-    } catch (err) {
-      return next(err);
-    }
-  });
+/** GET /auth/currentUser:  => { user }
+ *
+ * Returns the current user based on the token provided.
+ *
+ * Authorization required: ensureLoggedIn
+ */
 
+router.get("/currentUser", ensureLoggedIn, async function (req, res, next) {
+  try {
+    const user = await User.get(req.locals.user.username);
+    console.log("Res.JSON user: ", res.json({ user }));
+    return res.json({ user });
+  } catch (err) {
+    console.error("Error in /currentUser route:", err);
+    return next(err);
+  }
+});
 
 module.exports = router;
