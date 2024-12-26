@@ -5,7 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const { NotFoundError } = require("./expressError");
-const { authenticateJWT } = require("./middleware/auth");
+
 const authRoutes = require("./routes/auth");
 const companiesRoutes = require("./routes/companies");
 const usersRoutes = require("./routes/users");
