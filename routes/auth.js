@@ -21,17 +21,21 @@ const { BadRequestError } = require("../expressError");
 
 router.post("/token", async function (req, res, next) {
   try {
+    console.log("Received Token Request:", req.body);  // Log the incoming request
     const validator = jsonschema.validate(req.body, userAuthSchema);
     if (!validator.valid) {
       const errs = validator.errors.map((e) => e.stack);
+      console.error("Validation Errors:", errs);
       throw new BadRequestError(errs);
     }
 
     const { username, password } = req.body;
     const user = await User.authenticate(username, password);
-    const token = createToken(user);
-    console.log("Generated Token:", token);  // Ensure the token is generated correctly
     console.log("Authenticated User:", user);  // Log authenticated user
+    const token = createToken(user);
+    console.log("Generated Token on Login:", token);  // Log the generated token
+
+    // Ensure the response is sent correctly
     return res.json({ token, user });
   } catch (err) {
     console.error("Error in /token route:", err);
@@ -51,15 +55,20 @@ router.post("/token", async function (req, res, next) {
 
 router.post("/register", async function (req, res, next) {
   try {
+    console.log("Received Registration Request:", req.body);  // Log the incoming request
     const validator = jsonschema.validate(req.body, userRegisterSchema);
     if (!validator.valid) {
       const errs = validator.errors.map((e) => e.stack);
+      console.error("Validation Errors:", errs);
       throw new BadRequestError(errs);
     }
 
     const newUser = await User.register({ ...req.body, isAdmin: false });
+    console.log("Registered User:", newUser);  // Log the new user data
     const token = createToken(newUser);
-    console.log("Generated Token on Register:", token);  // Log generated token on register
+    console.log("Generated Token on Register:", token);  // Log the generated token
+
+    // Ensure the response is sent correctly
     return res.status(201).json({ token, user: newUser });
   } catch (err) {
     console.error("Error in /register route:", err);
@@ -76,8 +85,9 @@ router.post("/register", async function (req, res, next) {
 
 router.get("/currentUser", ensureLoggedIn, async function (req, res, next) {
   try {
+    console.log("Received request for current user with token:", req.headers.authorization);  // Log the token
     const user = await User.get(req.locals.user.username);
-    console.log("Res.JSON user: ", res.json({ user }));
+    console.log("Current User Data:", user);  // Log the current user data
     return res.json({ user });
   } catch (err) {
     console.error("Error in /currentUser route:", err);
