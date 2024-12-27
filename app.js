@@ -13,9 +13,7 @@ const jobsRoutes = require("./routes/jobs");
 
 const app = express();
 
-app.use(cors({
-  origin: 'https://jobly-frontend-r2ci.onrender.com/'
-}));
+app.use(cors({ origin: "https://your-frontend-url.com", credentials: true }));
 app.use(express.json());
 app.use(morgan("tiny"));
 
