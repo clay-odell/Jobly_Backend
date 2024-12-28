@@ -13,7 +13,7 @@ const jobsRoutes = require("./routes/jobs");
 
 const app = express();
 
-app.use(cors({ origin: "https://your-frontend-url.com", credentials: true }));
+app.use(cors())
 app.use(express.json());
 app.use(morgan("tiny"));
 
